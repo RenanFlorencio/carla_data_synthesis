@@ -8,7 +8,6 @@ client = Groq(
     api_key = os.getenv("GROQ_API_KEY"),
 )
 
-
 def getResponse(message):
     # Returns a regular LLAMA response
     instructions_content = (f"{message}"
@@ -44,6 +43,27 @@ def getResponse_trip(places):
     chat_completion = client.chat.completions.create(messages=message, model="llama3-8b-8192", temperature=1, response_format={"type": "json_object"})
 
     return chat_completion.choices[0].message.content
+
+def getResponse_trip_random(places):
+    instructions_content = (f"Plan the information of a person." 
+                            )
+    message = [
+        {
+            "role": "system",
+            "content": "You need to plan the routine of a person who has access to the following places: {places}. This person goes to a lot of places during the day and never stays more than an hour anywhere. Be creative and consider this person does not like to stay to much time at the same place. Maybe they go to the gym in the morning and in the evening, they have to take their kids to and from school, go to the bar and to the movies at night, for example. This person always gets home very late. Your response should be in a JSON format showing only the current location and current activity. Never include locations to activities. Always start the day at time 7 at home and end the day at time 23 at home, update every hour. Locations always have a single place, never two. Follow the example where the first number is the time: {{'7': {{'location':'home', 'activity':'wake up'}}, '8': {{'location':'school', 'activity':'study'}}, '9':{{'location':'cafe', 'activity':'breakfast".format(
+                places=", ".join(places),
+            )
+        },
+        {
+            "role": "user",
+            "content": instructions_content,
+        }
+    ]
+    chat_completion = client.chat.completions.create(messages=message, model="llama3-8b-8192", temperature=1, response_format={"type": "json_object"})
+
+    return chat_completion.choices[0].message.content
+
+
 
 def responseCheck(response, places):
     # Checks if the response from the LLM makes sense
