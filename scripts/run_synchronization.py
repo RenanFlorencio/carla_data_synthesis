@@ -161,6 +161,7 @@ class SimulationSynchronization(object):
         # Spawning new carla actors (not controlled by sumo)
         carla_spawned_actors = self.carla.spawned_actors - set(self.sumo2carla_ids.values())
         for carla_actor_id in carla_spawned_actors:
+            print('carla actor id', carla_actor_id)
             carla_actor = self.carla.get_actor(carla_actor_id)
 
             type_id = BridgeHelper.get_sumo_vtype(carla_actor)
